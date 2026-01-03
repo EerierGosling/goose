@@ -1,0 +1,13 @@
+<h1 id='temp:c:aOB4722dae4b1c349c8b5bc5e6fd'>daily goals</h1>
+<div class="" style="" data-section-style='7'><ul id='temp:c:aOB83b107ab62764299a7280d1c7'><li id='temp:c:aOB99d2e79ea3b24faf8c13c6ecb' class='' value='1'><span id='temp:c:aOB99d2e79ea3b24faf8c13c6ecb'>thing</span>
+<br/></li><li id='temp:c:aOBd3c9097ff3bd4f929d6aa4f68' class='checked'><span id='temp:c:aOBd3c9097ff3bd4f929d6aa4f68'>thing</span>
+<br/></li><li id='temp:c:aOB29b629eddffe408ab0c66c392' class=''><span id='temp:c:aOB29b629eddffe408ab0c66c392'>thing</span>
+<br/></li><li id='temp:c:aOBb646762e06c34418b9cf4cbb2' class='checked parent'><span id='temp:c:aOBb646762e06c34418b9cf4cbb2'>thing</span>
+<br/></li><ul><li id='temp:c:aOB8719004657cd4affa88e08e6d' class='checked'><span id='temp:c:aOB8719004657cd4affa88e08e6d'>thing</span>
+<br/></li></ul><li id='temp:c:aOB578305bf7ade4d03bb8686e06' class='checked'><span id='temp:c:aOB578305bf7ade4d03bb8686e06'>thing</span>
+<br/></li><li id='temp:c:aOBd2f34b8d2de542c4b5b8a6fd7' class='parent'><span id='temp:c:aOBd2f34b8d2de542c4b5b8a6fd7'>thing</span>
+<br/></li><ul><li id='temp:c:aOB704f0a6a571344ddb2e8a9229' class=''><span id='temp:c:aOB704f0a6a571344ddb2e8a9229'>thing</span>
+<br/></li><li id='temp:c:aOB5f619ed238474ebfa9564bf31' class=''><span id='temp:c:aOB5f619ed238474ebfa9564bf31'>thing</span>
+<br/></li></ul><li id='temp:c:aOBa5c74f484ce84b91899959281' class=''><span id='temp:c:aOBa5c74f484ce84b91899959281'>thing</span>
+<br/></li><li id='temp:c:aOBd54d888d8c5b42249c68a6554' class=''><span id='temp:c:aOBd54d888d8c5b42249c68a6554'>​</span>
+<br/></li></ul></div>
