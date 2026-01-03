@@ -126,8 +126,8 @@ def morning_start():
             morning_presence_job = None
             online = False
         
-        morning_reminder_job = job_scheduler.add_job(morning_reminder, 'interval', seconds=2)
-        morning_presence_job = job_scheduler.add_job(check_presence, 'interval', seconds=2)
+        morning_reminder_job = job_scheduler.add_job(morning_reminder, 'interval', hours=1)
+        morning_presence_job = job_scheduler.add_job(check_presence, 'interval', minutes=2)
 
     except Exception as e:
         print(f"error sending morning msg: {e}")
@@ -196,7 +196,6 @@ job_scheduler = BackgroundScheduler(timezone=pytz.timezone('America/New_York'))
 morning_start_job = job_scheduler.add_job(morning_start, 'cron', hour=7, minute=0)
 evening_start_job = job_scheduler.add_job(evening_start, 'cron', hour=20, minute=0)
 job_scheduler.start()
-
         
 if __name__ == "__main__":
     SocketModeHandler(app, os.environ.get("SLACK_APP_TOKEN")).start()
