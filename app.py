@@ -11,9 +11,9 @@ import requests
 
 load_dotenv()
 
-eeriergosling = "C06V73WGACB"
-sofia = "U056J6JURFF"
-canvas = "F0A6CJSMTD1"
+channel_id = os.environ.get("CHANNEL_ID")
+user_id = os.environ.get("USER_ID")
+canvas = os.environ.get("CANVAS")
 
 morning_reminder_job = None
 # evening_reminder_job = None
@@ -30,13 +30,6 @@ app = App(
     signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
 )
 
-def clean_canvas(content): # from https://github.com/UCYT5040/slack-flights-canvas/blob/master/canvas_editor.py#L18
-    return (
-        content.replace('\xa0', ' ')  # Replace non-breaking spaces with regular spaces
-        .replace('\n\n', '\n')  # Remove extra newlines
-        .strip()
-    )
-
 def check_canvas_progress():
 
     try:
@@ -45,9 +38,7 @@ def check_canvas_progress():
         headers = {
             "Authorization": f"Bearer {os.environ.get('SLACK_BOT_TOKEN')}"
         }
-        response = requests.get(file_url, headers=headers)
-
-        content = clean_canvas(response.text)
+        content = requests.get(file_url, headers=headers).text
 
         checked = len(re.findall(r"<li[^>]*class='checked'[^>]*>", content))
         unchecked = len(re.findall(r"<li[^>]*class=''[^>]*>", content))
@@ -64,7 +55,7 @@ def check_presence():
     global online
 
     try:
-        result = app.client.users_getPresence(user=sofia)
+        result = app.client.users_getPresence(user=user_id)
         online = result['presence'] == 'active'
         
     except Exception as e:
@@ -80,7 +71,7 @@ def handle_reaction_added(event, say):
     global morning_presence_job
     global online
 
-    if event["user"] != sofia or event["reaction"] != "white_check_mark" or not event.get("item", {}).get("ts"):
+    if event["user"] != user_id or event["reaction"] != "white_check_mark" or not event.get("item", {}).get("ts"):
         return
     
     if event["item"]["ts"] == morning_thread_ts:
@@ -95,20 +86,20 @@ def handle_reaction_added(event, say):
             morning_presence_job = None
             online = False
 
-        say(channel=eeriergosling, thread_ts=morning_thread_ts, text=f"thanks! good luck! :yay:")
+        say(channel=channel_id, thread_ts=morning_thread_ts, text=f"thanks! good luck! :yay:")
 
     elif event["item"]["ts"] == evening_thread_ts:
         # if evening_reminder_job:
         #     evening_reminder_job.remove()
         #     evening_reminder_job = None
-        say(channel=eeriergosling, thread_ts=evening_thread_ts, text=f"thanks! hope today was productive :D")
+        say(channel=channel_id, thread_ts=evening_thread_ts, text=f"thanks! hope today was productive :D")
         evening_thread_ts = None
 
         num_done = check_canvas_progress()
 
         app.client.chat_postMessage(
-            channel=eeriergosling,
-            text=f"<@{sofia}> got done {num_done[0]} of {num_done[2]} goals for today! :D (<https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0A6CJSMTD1|canvas>)",
+            channel=channel_id,
+            text=f"<@{user_id}> got done {num_done[0]} of {num_done[2]} goals for today! :D (<https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0A6CJSMTD1|canvas>)",
         )
 
 def morning_start():
@@ -119,8 +110,8 @@ def morning_start():
 
     try:
         response = app.client.chat_postMessage(
-            channel=eeriergosling,
-            text=f"<@{sofia}> what are your goals for today? :duck-plead:"
+            channel=channel_id,
+            text=f"<@{user_id}> what are your goals for today? :duck-plead:"
         )
 
         morning_thread_ts = response.get("ts")
@@ -147,8 +138,8 @@ def evening_start():
 
     try:
         response = app.client.chat_postMessage(
-            channel=eeriergosling,
-            text=f"<@{sofia}>! what did you get done today?"
+            channel=channel_id,
+            text=f"<@{user_id}>! what did you get done today?"
         )
 
         evening_thread_ts = response.get("ts")
@@ -183,7 +174,7 @@ def morning_reminder():
                 online = False
 
             app.client.chat_postMessage(
-                channel=eeriergosling,
+                channel=channel_id,
                 thread_ts=morning_thread_ts,
                 text="i'll stop reminding you now... but please don't forget tomorrow!",
             )
@@ -193,9 +184,9 @@ def morning_reminder():
             return
         
         app.client.chat_postMessage(
-            channel=eeriergosling,
+            channel=channel_id,
             thread_ts=morning_thread_ts,
-            text=f"<@{sofia}> please update your goals for today! :blobhaj_knife:",
+            text=f"<@{user_id}> please update your goals for today! :blobhaj_knife:",
         )
     except Exception as e:
         print(f"error sending hourly msg: {e}")
@@ -209,4 +200,3 @@ job_scheduler.start()
         
 if __name__ == "__main__":
     SocketModeHandler(app, os.environ.get("SLACK_APP_TOKEN")).start()
-
