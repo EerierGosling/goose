@@ -60,6 +60,10 @@ def check_presence():
     except Exception as e:
         print(f"error w/ presence: {e}")
 
+@app.command("/goose-status")
+def goose_status(ack, respond):
+    ack()
+    respond("up!", response_type="ephemeral")
 
 @app.event("reaction_added")
 def handle_reaction_added(event, say):
