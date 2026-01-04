@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  tom-nook-bot:
+  goose-slack-bot:
     build: .
     container_name: goose-slack-bot
     environment:
