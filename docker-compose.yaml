@@ -6,6 +6,9 @@ services:
     environment:
       - SLACK_BOT_TOKEN=${SLACK_BOT_TOKEN}
       - SLACK_APP_TOKEN=${SLACK_APP_TOKEN}
+      - CHANNEL_ID=${CHANNEL_ID}
+      - USER_ID=${USER_ID}
+      - CANVAS=${CANVAS}
     volumes:
       - .:/app
     working_dir: /app
