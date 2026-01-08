@@ -77,7 +77,6 @@ def handle_reaction_added(event, say):
         return
     
     if event["item"]["ts"] == morning_thread_ts:
-        morning_thread_ts = None
 
         if morning_reminder_job:
             morning_reminder_job.remove()
@@ -87,22 +86,28 @@ def handle_reaction_added(event, say):
             morning_presence_job.remove()
             morning_presence_job = None
             online = False
+        
+        num_done = check_canvas_progress()
 
-        say(channel=channel_id, thread_ts=morning_thread_ts, text=f"thanks! good luck! :yay:")
+        say(channel=channel_id, thread_ts=morning_thread_ts, text=f"<@{user_id}> has {num_done[2]} goals for today! :yay: (<https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0A6CJSMTD1|canvas>)", reply_broadcast=True)
+
+        morning_thread_ts = None
 
     elif event["item"]["ts"] == evening_thread_ts:
         # if evening_reminder_job:
         #     evening_reminder_job.remove()
         #     evening_reminder_job = None
-        say(channel=channel_id, thread_ts=evening_thread_ts, text=f"thanks! hope today was productive :D")
-        evening_thread_ts = None
+        say(channel=channel_id, thread_ts=evening_thread_ts, text=f"thanks! hope today was productive :D", reply_broadcast=True)
 
         num_done = check_canvas_progress()
 
         app.client.chat_postMessage(
             channel=channel_id,
+            thread_ts=evening_thread_ts,
             text=f"<@{user_id}> got done {num_done[0]} of {num_done[2]} goals for today! :D (<https://hackclub.enterprise.slack.com/docs/T0266FRGM/F0A6CJSMTD1|canvas>)",
+            reply_broadcast=True
         )
+        evening_thread_ts = None
 
 def morning_start():
     global morning_reminder_job
