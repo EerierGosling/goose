@@ -97,7 +97,7 @@ def handle_reaction_added(event, say):
         # if evening_reminder_job:
         #     evening_reminder_job.remove()
         #     evening_reminder_job = None
-        say(channel=channel_id, thread_ts=evening_thread_ts, text=f"thanks! hope today was productive :D", reply_broadcast=True)
+        say(channel=channel_id, thread_ts=evening_thread_ts, text=f"thanks! hope today was productive :D")
 
         num_done = check_canvas_progress()
 
