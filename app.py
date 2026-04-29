@@ -7,8 +7,6 @@ from datetime import datetime
 import pytz
 import re
 import requests
-from bs4 import BeautifulSoup
-from streamlit import json
 
 load_dotenv()
 
@@ -72,7 +70,7 @@ def goose_status(ack, respond):
 @app.command("/goose-timezone")
 def goose_timezone(ack, body, respond):
     global timezone
-    
+
     ack()
 
     if body.get("user_id") != user_id:
