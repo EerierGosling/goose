@@ -100,14 +100,14 @@ def handle_reaction_added(event, say):
     
     if event["item"]["ts"] == morning_thread_ts:
 
-        if morning_reminder_job:
-            morning_reminder_job.remove()
-            morning_reminder_job = None
+        # if morning_reminder_job:
+        #     morning_reminder_job.remove()
+        #     morning_reminder_job = None
 
-        if morning_presence_job:
-            morning_presence_job.remove()
-            morning_presence_job = None
-            online = False
+        # if morning_presence_job:
+        #     morning_presence_job.remove()
+        #     morning_presence_job = None
+        #     online = False
         
         num_done = check_canvas_progress()
 
@@ -147,13 +147,13 @@ def morning_start():
         if not morning_thread_ts:
             return
 
-        if morning_reminder_job:
-            morning_reminder_job.remove()
-            morning_reminder_job = None
-        if morning_presence_job:
-            morning_presence_job.remove()
-            morning_presence_job = None
-            online = False
+        # if morning_reminder_job:
+        #     morning_reminder_job.remove()
+        #     morning_reminder_job = None
+        # if morning_presence_job:
+        #     morning_presence_job.remove()
+        #     morning_presence_job = None
+        #     online = False
         
         # morning_reminder_job = job_scheduler.add_job(morning_reminder, 'interval', hours=1, timezone=timezone)
         # morning_presence_job = job_scheduler.add_job(check_presence, 'interval', minutes=2, timezone=timezone)
