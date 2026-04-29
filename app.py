@@ -7,6 +7,8 @@ from datetime import datetime
 import pytz
 import re
 import requests
+from bs4 import BeautifulSoup
+from streamlit import json
 
 load_dotenv()
 
@@ -28,6 +30,8 @@ app = App(
     token=os.environ.get("SLACK_BOT_TOKEN") 
 )
 
+timezone = pytz.timezone('America/New_York')
+
 def check_canvas_progress():
 
     try:
@@ -39,7 +43,7 @@ def check_canvas_progress():
         content = requests.get(file_url, headers=headers).text
 
         checked = len(re.findall(r"<li[^>]*class='checked'[^>]*>", content))
-        unchecked = len(re.findall(r"<li[^>]*class=''[^>]*>", content))
+        unchecked = len(re.findall(r"<li[^>]*>", content))
         
         total = checked + unchecked
         
@@ -59,10 +63,30 @@ def check_presence():
     except Exception as e:
         print(f"error w/ presence: {e}")
 
+
 @app.command("/goose-status")
 def goose_status(ack, respond):
     ack()
     respond("up!", response_type="ephemeral")
+
+@app.command("/goose-timezone")
+def goose_timezone(ack, body, respond):
+    global timezone
+    
+    ack()
+
+    if body.get("user_id") != user_id:
+        respond(f"you're not <@{user_id}>!", response_type="ephemeral")
+        return
+    
+    new_tz = body.get("text", "").strip()
+
+    if new_tz not in pytz.all_timezones:
+        respond(f"invalid timezone!", response_type="ephemeral")
+        return
+    
+    timezone = pytz.timezone(new_tz)
+    respond(f"changed timezone to {new_tz}!", response_type="ephemeral")
 
 @app.event("reaction_added")
 def handle_reaction_added(event, say):
@@ -133,8 +157,8 @@ def morning_start():
             morning_presence_job = None
             online = False
         
-        morning_reminder_job = job_scheduler.add_job(morning_reminder, 'interval', hours=1)
-        morning_presence_job = job_scheduler.add_job(check_presence, 'interval', minutes=2)
+        # morning_reminder_job = job_scheduler.add_job(morning_reminder, 'interval', hours=1, timezone=timezone)
+        # morning_presence_job = job_scheduler.add_job(check_presence, 'interval', minutes=2, timezone=timezone)
 
     except Exception as e:
         print(f"error sending morning msg: {e}")
@@ -156,50 +180,50 @@ def evening_start():
         # if evening_reminder_job:
         #     evening_reminder_job.remove()
         #     evening_reminder_job = None
-        # evening_reminder_job = job_scheduler.add_job(evening_reminder, 'interval', hours=1)
+        # evening_reminder_job = job_scheduler.add_job(evening_reminder, 'interval', hours=1, timezone=timezone)
 
     except Exception as e:
         print(f"error sending evening msg: {e}")
 
-def morning_reminder():
-    global morning_reminder_job
-    global morning_presence_job
-    global online
-    global morning_thread_ts
+# def morning_reminder():
+#     global morning_reminder_job
+#     global morning_presence_job
+#     global online
+#     global morning_thread_ts
 
-    try:
-        current_time = datetime.now(pytz.timezone('America/New_York'))
-        if current_time.hour >= 23: # 5 pm
-            morning_thread_ts = None
+#     try:
+#         current_time = datetime.now(timezone)
+#         if current_time.hour >= 23: # 5 pm
+#             morning_thread_ts = None
 
-            if morning_reminder_job:
-                morning_reminder_job.remove()
-                morning_reminder_job = None
-            if morning_presence_job:
-                morning_presence_job.remove()
-                morning_presence_job = None
-                online = False
+#             if morning_reminder_job:
+#                 morning_reminder_job.remove()
+#                 morning_reminder_job = None
+#             if morning_presence_job:
+#                 morning_presence_job.remove()
+#                 morning_presence_job = None
+#                 online = False
 
-            app.client.chat_postMessage(
-                channel=channel_id,
-                thread_ts=morning_thread_ts,
-                text="i'll stop reminding you now... but please don't forget tomorrow!",
-            )
-            return
+#             app.client.chat_postMessage(
+#                 channel=channel_id,
+#                 thread_ts=morning_thread_ts,
+#                 text="i'll stop reminding you now... but please don't forget tomorrow!",
+#             )
+#             return
 
-        if not online:
-            return
+#         if not online:
+#             return
         
-        app.client.chat_postMessage(
-            channel=channel_id,
-            thread_ts=morning_thread_ts,
-            text=f"<@{user_id}> please update your goals for today! :blobhaj_knife:",
-        )
-    except Exception as e:
+#         app.client.chat_postMessage(
+#             channel=channel_id,
+#             thread_ts=morning_thread_ts,
+#             text=f"<@{user_id}> please update your goals for today! :blobhaj_knife:",
+#         )
+#     except Exception as e:
         print(f"error sending hourly msg: {e}")
 
 
-job_scheduler = BackgroundScheduler(timezone=pytz.timezone('America/New_York'))
+job_scheduler = BackgroundScheduler(timezone=timezone)
 morning_start_job = job_scheduler.add_job(morning_start, 'cron', hour=7, minute=0)
 evening_start_job = job_scheduler.add_job(evening_start, 'cron', hour=20, minute=0)
 job_scheduler.start()
