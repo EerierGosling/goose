@@ -86,6 +86,20 @@ def goose_timezone(ack, body, respond):
     timezone = pytz.timezone(new_tz)
     respond(f"changed timezone to {new_tz}!", response_type="ephemeral")
 
+
+@app.event("app_mention")
+def handle_message(event, say):
+    # react with :hyper_dino_wave: on any message pinging the bot
+    try:
+        app.client.reactions_add(
+            channel=event["channel"],
+            name="hyper-dino-wave",
+            timestamp=event["ts"]
+        )
+    except Exception as e:
+        print(f"error adding reaction: {e}")
+
+
 @app.event("reaction_added")
 def handle_reaction_added(event, say):
     global morning_reminder_job
