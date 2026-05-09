@@ -1,0 +1,13 @@
+[Unit]
+Description=goose
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+WorkingDirectory=/home/eeriergosling/services/goose
+ExecStart=/usr/bin/docker compose up
+ExecStop=/usr/bin/docker compose down
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
