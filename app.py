@@ -89,7 +89,6 @@ def goose_timezone(ack, body, respond):
 
 @app.event("app_mention")
 def handle_message(event, say):
-    # react with :hyper_dino_wave: on any message pinging the bot
     try:
         app.client.reactions_add(
             channel=event["channel"],
