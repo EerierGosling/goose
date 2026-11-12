@@ -235,8 +235,8 @@ def evening_start():
 
 
 job_scheduler = BackgroundScheduler(timezone=timezone)
-morning_start_job = job_scheduler.add_job(morning_start, 'cron', hour=7, minute=0)
-evening_start_job = job_scheduler.add_job(evening_start, 'cron', hour=20, minute=0)
+morning_start_job = job_scheduler.add_job(morning_start, 'cron', hour=9, minute=0)
+evening_start_job = job_scheduler.add_job(evening_start, 'cron', hour=0, minute=0)
 job_scheduler.start()
         
 if __name__ == "__main__":
